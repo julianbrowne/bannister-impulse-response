@@ -2,6 +2,10 @@
 
 Interactive visualisation of the Bannister (1991) two-component impulse-response model applied to a 10k training plan.
 
+## View on GH pages
+
+https://julianbrowne.github.io/bannister-impulse-response/
+
 ## Running locally
 
 ES modules require the files to be served over HTTP, not opened directly from disk.
