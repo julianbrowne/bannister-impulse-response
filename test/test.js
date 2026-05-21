@@ -1,7 +1,7 @@
 // Bannister Impulse Response – model correctness tests
 // Run with: node test.js
 
-import { WEEKLY, DAILY, simulate, LOADS } from './model.js';
+import { WEEKLY, DAILY, simulate, LOADS } from '../js/model.js';
 
 const { steady: STEADY, taper: TAPER, overreach: OVERREACH, rest: REST } = LOADS;
 

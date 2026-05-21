@@ -91,6 +91,7 @@ const scenarios = {
 };
 
 // Default labels for weekly scenarios (21 entries: baseline + 20 weeks)
+
 const weeklyLabels = ['Start', ...Array.from({length:20},(_,i)=>`Wk ${i+1}`)];
 let chart;
 let currentScenario = 'steady';

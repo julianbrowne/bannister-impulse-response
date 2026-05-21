@@ -19,7 +19,7 @@ Then open [http://localhost:8080](http://localhost:8080) in a browser.
 ## Running the tests
 
 ```bash
-node test.js
+node test/test.js
 ```
 
 ## Files
@@ -27,8 +27,8 @@ node test.js
 | File | Purpose |
 |------|---------|
 | `index.html` | Page markup |
-| `style.css` | Styles |
-| `bir.js` | Chart and scenario definitions |
-| `model.js` | Bannister model — parameters, `simulate()`, scenario loads |
-| `test.js` | Model correctness tests |
+| `css/style.css` | Styles |
+| `js/bir.js` | Chart and scenario definitions |
+| `js/model.js` | Bannister model — parameters, `simulate()`, scenario loads |
+| `test/test.js` | Model correctness tests |
 | `serve.sh` | Start local HTTP server (`python3 -m http.server 8080`) |
