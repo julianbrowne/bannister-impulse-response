@@ -17,13 +17,15 @@ body {
   position: relative;
 }
 
-.test-link {
+.test-links {
   position: absolute;
   top: 0;
   right: 0;
+  display: flex;
+  gap: 8px;
 }
 
-.test-link img {
+.test-links img {
   display: block;
   width: 32px;
   height: 32px;
@@ -31,7 +33,7 @@ body {
   transition: opacity .15s;
 }
 
-.test-link:hover img { opacity: 1; }
+.test-links a:hover img { opacity: 1; }
 
 h2 {
   font-size: 1.1rem;
