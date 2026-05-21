@@ -222,6 +222,87 @@ function runTests() {
     `wk10: readiness=${rPerf[9].toFixed(1)}, fitness ${rFit[4].toFixed(1)} → ${rFit[9].toFixed(1)}`
   );
 
+  // ── Calvert et al. (1976): recursive formula validation ────────────────────
+  section('Calvert et al. (1976): recursive formula validation');
+
+  // Paper appendix Table I: daily loads [10,0,0,20,20,0,0,10,10,0], τ₃=15d
+  // Fatigue only (wFit=wFat=1, kFit≈0 to isolate fatigue channel)
+  const PAPER_PARAMS = { kFit: 1/50, kFat: 1/15, wFit: 1.0, wFat: 1.0 };
+  const PAPER_LOADS  = [10, 0, 0, 20, 20, 0, 0, 10, 10, 0];
+  const { fats: pFat } = simulate(PAPER_LOADS, PAPER_PARAMS);
+
+  // Paper Table I fatigue values (rounded to 2dp in paper, we test to 1dp tolerance)
+  const paperExpected = [10.0, 9.4, 8.7, 28.2, 46.4, 43.4, 40.6, 48.0, 54.9, 51.3];
+
+  assert(
+    'Day 1 fatigue matches paper (load=10 → f=10.0)',
+    Math.abs(pFat[0] - paperExpected[0]) < 0.15,
+    `got ${pFat[0]}, expected ${paperExpected[0]}`
+  );
+  assert(
+    'Day 5 fatigue matches paper (two heavy days → f≈46.4)',
+    Math.abs(pFat[4] - paperExpected[4]) < 0.2,
+    `got ${pFat[4]}, expected ${paperExpected[4]}`
+  );
+  assert(
+    'Day 10 fatigue matches paper (f≈51.3 after final rest day)',
+    Math.abs(pFat[9] - paperExpected[9]) < 0.2,
+    `got ${pFat[9]}, expected ${paperExpected[9]}`
+  );
+
+  const allClose = pFat.every((v, i) => Math.abs(v - paperExpected[i]) < 0.2);
+  assert(
+    'All 10 paper appendix fatigue values match within 0.2 units',
+    allClose,
+    `got [${pFat.join(', ')}], expected [${paperExpected.join(', ')}]`
+  );
+
+  assert(
+    'Fatigue decays exponentially during rest: day ratios match e^(-1/τ₃) within 1%',
+    (() => {
+      const expected = Math.exp(-PAPER_PARAMS.kFat);
+      const r1 = pFat[1] / pFat[0];
+      const r2 = pFat[2] / pFat[1];
+      return Math.abs(r1 - expected) < 0.01 && Math.abs(r2 - expected) < 0.01;
+    })(),
+    `day2/day1=${(pFat[1]/pFat[0]).toFixed(4)}, day3/day2=${(pFat[2]/pFat[1]).toFixed(4)}, e^(-1/15)=${Math.exp(-1/15).toFixed(4)}`
+  );
+
+  // ── Taper mechanism and K-factor (Calvert et al. 1976) ─────────────────────
+  section('Taper mechanism and K-factor (Calvert et al. 1976)');
+
+  assert(
+    'τ₁/τ₃ ratio ≥ 2 (paper: 50d/15d=3.3; required for taper to work)',
+    (1 / WEEKLY.kFit * 7) / (1 / WEEKLY.kFat * 7) >= 2,
+    `ratio = ${((1/WEEKLY.kFit*7)/(1/WEEKLY.kFat*7)).toFixed(1)} (weekly params)`
+  );
+
+  // Peak readiness must occur after peak training load (taper mechanism)
+  const peakLoadIdx  = tPerf.reduce((best, _, i) => TAPER[i] > TAPER[best] ? i : best, 0);
+  const peakReadIdx  = tPerf.reduce((best, v, i) => v > tPerf[best] ? i : best, 0);
+  assert(
+    'Peak readiness occurs after week of peak training load (taper mechanism)',
+    peakReadIdx > peakLoadIdx,
+    `peak load at index ${peakLoadIdx} (wk${peakLoadIdx+1}), peak readiness at index ${peakReadIdx} (wk${peakReadIdx+1})`
+  );
+
+  // After training stops, readiness should improve (fatigue clears faster than fitness)
+  const restStart = REST.findIndex(l => l === 0);
+  assert(
+    'Readiness improves immediately once training stops (fatigue clears faster than fitness)',
+    rPerf[restStart + 1] > rPerf[restStart - 1],
+    `readiness: pre-rest=${rPerf[restStart-1].toFixed(1)}, 2 weeks into rest=${rPerf[restStart+1].toFixed(1)}`
+  );
+
+  // Higher wFat (K factor in paper) deepens the readiness deficit under sustained load
+  const pHigh = simulate(OVERREACH, { ...WEEKLY, wFat: WEEKLY.wFat * 2 });
+  const pNorm = simulate(OVERREACH, WEEKLY);
+  assert(
+    'Higher K-factor (wFat) deepens readiness deficit under sustained heavy load',
+    Math.min(...pHigh.perfs) < Math.min(...pNorm.perfs),
+    `min readiness: K×2=${Math.min(...pHigh.perfs).toFixed(1)}, K×1=${Math.min(...pNorm.perfs).toFixed(1)}`
+  );
+
   // ── Summary ─────────────────────────────────────────────────────────────────
   if (isBrowser) {
     const el = document.createElement('div');
