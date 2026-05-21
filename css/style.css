@@ -14,7 +14,24 @@ body {
 .page-wrap {
   max-width: 860px;
   margin: 0 auto;
+  position: relative;
 }
+
+.test-link {
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+
+.test-link img {
+  display: block;
+  width: 32px;
+  height: 32px;
+  opacity: 0.6;
+  transition: opacity .15s;
+}
+
+.test-link:hover img { opacity: 1; }
 
 h2 {
   font-size: 1.1rem;
