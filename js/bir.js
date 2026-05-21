@@ -1,4 +1,5 @@
-import { WEEKLY, DAILY, simulate, LOADS, LOADS_NOVICE } from './model.js';
+import { WEEKLY, DAILY, simulate } from './model.js';
+import { LOADS } from './loads.js';
 
 const dark = matchMedia('(prefers-color-scheme: dark)').matches;
 const gridCol = dark ? 'rgba(255,255,255,0.07)' : 'rgba(0,0,0,0.07)';
@@ -13,7 +14,7 @@ const scenarios = {
     params: DAILY,
     labels: ['Pre','D1','D2','D3','D4','D5','D6','D7','D8','D9','D10',
              'D11','D12','D13','D14','D15','D16','D17','D18','D19','D20'],
-    loads: LOADS.steady,
+    loads: LOADS.athlete.steady,
     note: 'Each session spikes fatigue; two rest days clear nearly all of it. The next session catches fitness near its peak — this is the timing that makes steady build work.',
     events: [
       { cls:'fat',  week:'Day 1–3',   text:'First session spikes fatigue to 10. Two rest days clear it to ~2.5 — almost back to zero before the next run.' },
@@ -21,7 +22,7 @@ const scenarios = {
       { cls:'perf', week:'Day 12+',   text:'Pre-session readiness grows with each cycle as fitness compounds. The gap between fitness and fatigue widens — the steady build payoff.' },
     ],
     novice: {
-      loads: LOADS_NOVICE.steady,
+      loads: LOADS.novice.steady,
       note: 'Each session is followed by three rest days — more recovery than an athlete needs, but right for a beginner. Fatigue clears almost entirely before each run.',
       events: [
         { cls:'fat',  week:'Day 1–4',   text:'First session spikes fatigue. Three rest days bring it close to zero — the next run starts nearly fresh.' },
@@ -31,7 +32,7 @@ const scenarios = {
     }
   },
   taper: {
-    loads: LOADS.taper,
+    loads: LOADS.athlete.taper,
     raceDay: 18,
     note: 'Sixteen-week training block then a sharp two-week taper. Fatigue clears faster than fitness decays — readiness peaks just before race day (◆ Wk 19).',
     events: [
@@ -41,7 +42,7 @@ const scenarios = {
       { cls:'perf', week:'Week 19 ◆', text:'Race day. The high effort spikes fatigue, but readiness was at its peak going in. Recovery follows.' },
     ],
     novice: {
-      loads: LOADS_NOVICE.taper,
+      loads: LOADS.novice.taper,
       note: 'Sixteen-week build at beginner loads, then a two-week taper. The taper dynamics are identical to an athlete plan — readiness peaks just before race day (◆ Wk 19).',
       events: [
         { cls:'fit',  week:'Week 1–16', text:'Progressive build at novice loads, peaking around week 15. Fatigue stays manageable — the runner feels tired but not overwhelmed.' },
@@ -52,7 +53,7 @@ const scenarios = {
     }
   },
   overreach: {
-    loads: LOADS.overreach,
+    loads: LOADS.athlete.overreach,
     forcedRest: 14,
     note: 'Load escalates too fast. Readiness stays deeply negative during the build-up — the runner digs a hole that takes weeks to escape.',
     events: [
@@ -61,7 +62,7 @@ const scenarios = {
       { cls:'perf', week:'Week 15+ ◆',text:'Forced rest clears fatigue quickly. Readiness rebounds, but those weeks of poor form could have been avoided with a steadier ramp.' },
     ],
     novice: {
-      loads: LOADS_NOVICE.overreach,
+      loads: LOADS.novice.overreach,
       note: 'Even at beginner loads, ramping too fast causes the same overtraining trap. The hole is shallower, but it still takes weeks to climb out.',
       events: [
         { cls:'fat',  week:'Week 1–7',  text:'Too-fast escalation drives fatigue above fitness even at modest loads. Readiness turns negative — a warning sign at any level.' },
@@ -71,7 +72,7 @@ const scenarios = {
     }
   },
   rest: {
-    loads: LOADS.rest,
+    loads: LOADS.athlete.rest,
     note: 'Training stops for several weeks — illness, holiday, life. Both fitness and fatigue decay, but fitness decays more slowly.',
     events: [
       { cls:'fit',  week:'Week 1–4',  text:'Good form coming in. Then training stops. Fatigue clears within days.' },
@@ -79,7 +80,7 @@ const scenarios = {
       { cls:'perf', week:'Week 13+',  text:'Return to training. Fitness lower than it appears. Building back takes longer than the break.' },
     ],
     novice: {
-      loads: LOADS_NOVICE.rest,
+      loads: LOADS.novice.rest,
       note: 'Starting from a lower training base, the rest period follows the same pattern. Fatigue clears quickly, fitness decays slowly — the readiness signal is just as misleading.',
       events: [
         { cls:'fit',  week:'Week 1–4',  text:'Moderate form coming in from lower training loads. Training stops. Fatigue clears quickly.' },

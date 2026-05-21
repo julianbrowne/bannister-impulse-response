@@ -1,9 +1,10 @@
 // Bannister Impulse Response – model correctness tests
 // Run with: node test/test.js  OR  open test/index.html in a browser
 
-import { WEEKLY, DAILY, simulate, LOADS } from '../js/model.js';
+import { WEEKLY, DAILY, simulate } from '../js/model.js';
+import { LOADS } from '../js/loads.js';
 
-const { steady: STEADY, taper: TAPER, overreach: OVERREACH, rest: REST } = LOADS;
+const { steady: STEADY, taper: TAPER, overreach: OVERREACH, rest: REST } = LOADS.athlete;
 
 // ── Output adapter ────────────────────────────────────────────────────────────
 const isBrowser = typeof document !== 'undefined';
