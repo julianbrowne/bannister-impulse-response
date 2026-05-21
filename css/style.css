@@ -107,6 +107,10 @@ h2 {
 
 canvas#birChart { display: block; }
 
+.bir-dot--fit  { background: #1D9E75; }
+.bir-dot--fat  { background: #E24B4A; }
+.bir-dot--perf { background: #378ADD; }
+
 .bir-annotation {
   font-size: 12px;
   color: #73726c;
